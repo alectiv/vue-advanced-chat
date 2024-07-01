@@ -6,6 +6,7 @@
         :current-user-id="currentUserId"
         :rooms="orderedRooms"
         :loading-rooms="loadingRoomsCasted"
+        @search-after-room="sendToChatContainer"
         :rooms-loaded="roomsLoadedCasted"
         :room="room"
         :room-actions="roomActionsCasted"
@@ -30,7 +31,6 @@
           <slot :name="el.slot" v-bind="data" />
         </template>
       </rooms-list>
-
       <room
         :current-user-id="currentUserId"
         :rooms="roomsCasted"
@@ -98,7 +98,7 @@
         :file="previewFile"
         @close-media-preview="showMediaPreview = false"
       >
-        <template v-for="el in slots" #[el.slot]="data">
+        <template v-for="el in slots" #[name]="data">
           <slot :name="el.slot" v-bind="data" />
         </template>
       </media-preview>
@@ -242,7 +242,8 @@ export default {
       showRoomsList: true,
       isMobile: false,
       showMediaPreview: false,
-      previewFile: {}
+      previewFile: {},
+      searchQuery: ''
     }
   },
 
@@ -568,6 +569,10 @@ export default {
         message,
         roomId: this.room.roomId
       })
+    },
+    sendToChatContainer(searchQuery) {
+      console.log("Firebase searchRooms called with query:", searchQuery);
+      this.$emit('search-after-room', searchQuery);
     }
   }
 }

@@ -9,8 +9,16 @@
   >
     <slot name="rooms-header" />
 
-    <slot name="rooms-list-search">
-    </slot>
+    <div style="margin-bottom: 10px;">
+      <input
+        id="name"
+        v-model="searchQuery"
+        type="text"
+        placeholder="Sök efter klient"
+        class="search-field"
+        @input="sendToChatContainer"
+      />
+    </div>
 
     <loader :show="loadingRooms" type="rooms">
       <template v-for="(idx, name) in $slots" #[name]="data">
@@ -48,7 +56,7 @@
         </room-content>
       </div>
       <transition name="vac-fade-message">
-        <div v-if="rooms.length && !loadingRooms" id="infinite-loader-rooms">
+        <div v-if="showInfiniteLoader" id="infinite-loader-rooms">
           <loader :show="showLoader" :infinite="true" type="infinite-rooms">
             <template v-for="(idx, name) in $slots" #[name]="data">
               <slot :name="name" v-bind="data" />
@@ -100,7 +108,8 @@ export default {
     'room-action-handler',
     'loading-more-rooms',
     'fetch-room',
-    'fetch-more-rooms'
+    'fetch-more-rooms',
+    'search-after-room'
   ],
 
   data() {
@@ -121,6 +130,9 @@ export default {
       return this.searchQuery
         ? filteredItems(this.rooms, 'roomName', this.searchQuery)
         : this.rooms;
+    },
+    showInfiniteLoader() {
+      return this.rooms.length > 0 && !this.roomsLoaded && !this.searchQuery;
     }
   },
 
@@ -129,25 +141,25 @@ export default {
       deep: true,
       handler(newVal, oldVal) {
         if (newVal.length !== oldVal.length || this.roomsLoaded) {
-          this.loadingMoreRooms = false
+          this.loadingMoreRooms = false;
         }
       }
     },
     loadingRooms(val) {
       if (!val) {
-        setTimeout(() => this.initIntersectionObserver())
+        setTimeout(() => this.initIntersectionObserver());
       }
     },
     loadingMoreRooms(val) {
-      this.$emit('loading-more-rooms', val)
+      this.$emit('loading-more-rooms', val);
     },
     roomsLoaded: {
       immediate: true,
       handler(val) {
         if (val) {
-          this.loadingMoreRooms = false
+          this.loadingMoreRooms = false;
           if (!this.loadingRooms) {
-            this.showLoader = false
+            this.showLoader = false;
           }
         }
       }
@@ -155,7 +167,7 @@ export default {
     room: {
       immediate: true,
       handler(val) {
-        if (val && !this.isMobile) this.selectedRoomId = val.roomId
+        if (val && !this.isMobile) this.selectedRoomId = val.roomId;
       }
     }
   },
@@ -163,26 +175,26 @@ export default {
   methods: {
     initIntersectionObserver() {
       if (this.observer) {
-        this.showLoader = true
-        this.observer.disconnect()
+        this.showLoader = true;
+        this.observer.disconnect();
       }
 
-      const loader = this.$el.querySelector('#infinite-loader-rooms')
+      const loader = this.$el.querySelector('#infinite-loader-rooms');
 
       if (loader) {
         const options = {
           root: this.$el.querySelector('#rooms-list'),
           rootMargin: `${this.scrollDistance}px`,
           threshold: 0
-        }
+        };
 
         this.observer = new IntersectionObserver(entries => {
           if (entries[0].isIntersecting) {
-            this.loadMoreRooms()
+            this.loadMoreRooms();
           }
-        }, options)
+        }, options);
 
-        this.observer.observe(loader)
+        this.observer.observe(loader);
       }
     },
     handleCustomSearchRoom(query) {
@@ -190,21 +202,24 @@ export default {
       this.$emit('custom-search-room', query);
     },
     openRoom(room) {
-      if (room.roomId === this.room.roomId && !this.isMobile) return
-      if (!this.isMobile) this.selectedRoomId = room.roomId
-      this.$emit('fetch-room', { room })
+      if (room.roomId === this.room.roomId && !this.isMobile) return;
+      if (!this.isMobile) this.selectedRoomId = room.roomId;
+      this.$emit('fetch-room', { room });
     },
     loadMoreRooms() {
-      if (this.loadingMoreRooms) return
+      if (this.loadingMoreRooms) return;
 
       if (this.roomsLoaded) {
-        this.loadingMoreRooms = false
-        this.showLoader = false
-        return
+        this.loadingMoreRooms = false;
+        this.showLoader = false;
+        return;
       }
 
-      this.$emit('fetch-more-rooms')
-      this.loadingMoreRooms = true
+      this.$emit('fetch-more-rooms');
+      this.loadingMoreRooms = true;
+    },
+    sendToChatContainer() {
+      this.$emit('search-after-room', this.searchQuery);
     }
   }
 }

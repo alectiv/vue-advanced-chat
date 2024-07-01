@@ -36,3 +36,19 @@
 @import '../components/Loader/Loader';
 @import '../components/SvgIcon/SvgIcon';
 @import '../components/ProgressBar/ProgressBar';
+
+
+.search-field {
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  height: 46px;
+  width: 98%;
+  padding-left: calc(-1px + 0.75rem);
+  padding-right: calc(-1px + 0.75rem);
+  background-color: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.05);
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  --tw-text-opacity: 1;
+  color: rgb(9 9 11 / var(--tw-text-opacity));
+}
