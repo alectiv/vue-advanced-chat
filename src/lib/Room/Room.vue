@@ -42,6 +42,12 @@
 			id="messages-list"
 			ref="scrollContainer"
 			class="vac-container-scroll"
+      style="border-top: 1px solid #D9D9D9;
+    border-left: 1px solid #D9D9D9;
+    border-right: 1px solid #D9D9D9;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+"
 			@scroll="onContainerScroll"
 		>
 			<loader :show="loadingMessages" type="messages">
@@ -49,7 +55,7 @@
 					<slot :name="name" v-bind="data" />
 				</template>
 			</loader>
-			<div class="vac-messages-container">
+			<div class="vac-messages-container" style="padding: 0 15px 12px;">
 				<div :class="{ 'vac-messages-hidden': loadingMessages }">
 					<transition name="vac-fade-message">
 						<div>

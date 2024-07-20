@@ -16,9 +16,10 @@
 	.vac-card-date {
 		max-width: 150px;
 		font-weight: 500;
+		border-radius: 10em;
 		text-transform: uppercase;
-		color: var(--chat-message-color-date);
-		background-color: var(--chat-message-bg-color-date);
+		color: #666666;
+		background-color: #F4F4F4;
 	}
 
 	.vac-card-system {

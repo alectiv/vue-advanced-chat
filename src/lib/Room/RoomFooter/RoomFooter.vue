@@ -3,6 +3,14 @@
 		v-show="Object.keys(room).length && showFooter"
 		id="room-footer"
 		class="vac-room-footer"
+    style="
+    border-left: 1px solid #d2d2d2;
+    border-right: 1px solid #d2d2d2;
+    border-bottom: 1px solid #d2d2d2;
+    border-top: 0;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+"
 		:class="{
 			'vac-app-box-shadow': shadowFooter
 		}"

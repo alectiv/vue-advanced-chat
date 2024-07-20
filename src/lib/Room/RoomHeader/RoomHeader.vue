@@ -1,7 +1,7 @@
 <template>
 	<div class="vac-room-header vac-app-border-b">
 		<slot name="room-header">
-			<div class="vac-room-wrapper">
+			<div class="vac-room-wrapper" style="padding: 0;">
 				<transition name="vac-slide-up">
 					<div v-if="messageSelectionEnabled" class="vac-room-selection">
 						<div

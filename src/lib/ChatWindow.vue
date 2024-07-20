@@ -1,6 +1,6 @@
 <template>
   <div class="vac-card-window" :style="[{ height }, cssVars]">
-    <div class="vac-chat-container">
+    <div class="vac-chat-container" style="gap: 32px;">
       <rooms-list
         v-if="!singleRoomCasted"
         :current-user-id="currentUserId"

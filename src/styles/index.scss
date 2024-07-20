@@ -39,16 +39,12 @@
 
 
 .search-field {
-  font-size: 0.875rem;
+  font-size: .875rem;
   line-height: 1.5rem;
-  height: 46px;
-  width: 98%;
-  padding-left: calc(-1px + 0.75rem);
-  padding-right: calc(-1px + 0.75rem);
-  background-color: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.05);
-  border-radius: 0.5rem;
+  width: 100%;
+  border: 0;
+  padding: 10px 18px;
+  background-color: #f4f4f4;
+  border-radius: 10px;
   box-sizing: border-box;
-  --tw-text-opacity: 1;
-  color: rgb(9 9 11 / var(--tw-text-opacity));
 }
