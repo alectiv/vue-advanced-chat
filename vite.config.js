@@ -11,6 +11,7 @@ export default defineConfig({
       formats: ['es', 'umd'], // ✅ Lägg till detta
       fileName: (format) => `vue-advanced-chat.${format}.js` // ✅ Styr filnamnet
     },
+    cssCodeSplit: false, // ✅ Detta gör att CSS hamnar i .js-filen
     rollupOptions: {
       external: ['vue'],
       output: {
