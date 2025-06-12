@@ -165,10 +165,14 @@ export default {
       }
     
       // 🏷 Filtrera på tagg
-      if (this.selectedTag) {
+     if (this.selectedTag) {
         rooms = rooms.filter(room => {
-          if (!room.tags) return false
-          return room.tags.includes(this.selectedTag)
+          const matchingUser = room.users?.find(user =>
+            user._id !== this.currentUserId &&
+            Array.isArray(user.tags) &&
+            user.tags.includes(this.selectedTag)
+          )
+          return !!matchingUser
         })
       }
     
