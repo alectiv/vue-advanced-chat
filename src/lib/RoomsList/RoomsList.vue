@@ -85,7 +85,8 @@ import Loader from '../../components/Loader/Loader'
 import RoomsSearch from './RoomsSearch/RoomsSearch'
 import RoomContent from './RoomContent/RoomContent'
 import filteredItems from '../../utils/filter-items'
-
+import { smartFilterRooms } from '../../utils/filter-helpers'
+  
 export default {
   name: 'RoomsList',
   components: {
@@ -156,7 +157,7 @@ export default {
     
       // 🔍 Sökning
       if (this.searchQuery) {
-        rooms = filteredItems(rooms, 'roomName', this.searchQuery)
+        rooms = smartFilterRooms(rooms, this.searchQuery, this.currentUserId)
       }
     
       // 🔕 Visa bara olästa
