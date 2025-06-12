@@ -20,6 +20,18 @@
       />
     </div>
 
+    <div class="filters">
+      <label>
+        <input type="checkbox" v-model="showOnlyUnread" />
+        Visa endast olästa
+      </label>
+    
+      <select v-model="selectedTag">
+        <option value="">Alla taggar</option>
+        <option v-for="tag in availableTags" :key="tag" :value="tag">{{ tag }}</option>
+      </select>
+    </div>
+
     <loader :show="loadingRooms" type="rooms">
       <template v-for="(idx, name) in $slots" #[name]="data">
         <slot :name="name" v-bind="data" />
@@ -113,23 +125,49 @@ export default {
   ],
 
   data() {
-    return {
-      searchQuery: '',
-      observer: null,
-      showLoader: true,
-      loadingMoreRooms: false,
-      selectedRoomId: ''
-    }
+      return {
+        searchQuery: '',
+        observer: null,
+        showLoader: true,
+        loadingMoreRooms: false,
+        selectedRoomId: '',
+        showOnlyUnread: false,
+        selectedTag: '',
+      }
   },
 
   computed: {
+    availableTags() {
+      const tags = new Set()
+      this.rooms.forEach(room => {
+        if (Array.isArray(room.tags)) {
+          room.tags.forEach(tag => tags.add(tag))
+        }
+      })
+      return Array.from(tags)
+    },
     filteredRooms() {
-      if (this.customSearchRoomEnabled) {
-        return this.rooms;
+      let rooms = this.rooms
+    
+      // 🔍 Sökning
+      if (this.searchQuery) {
+        rooms = filteredItems(rooms, 'roomName', this.searchQuery)
       }
-      return this.searchQuery
-        ? filteredItems(this.rooms, 'roomName', this.searchQuery)
-        : this.rooms;
+    
+      // 🔕 Visa bara olästa
+      if (this.showOnlyUnread) {
+        rooms = rooms.filter(room => room.unreadCount > 0)
+      }
+    
+      // 🏷 Filtrera på tagg
+      if (this.selectedTag) {
+        rooms = rooms.filter(room => {
+          if (!room.tags) return false
+          return room.tags.includes(this.selectedTag)
+        })
+      }
+    
+      return rooms
     },
     showInfiniteLoader() {
       return this.rooms.length > 0 && !this.roomsLoaded && !this.searchQuery;
@@ -224,3 +262,19 @@ export default {
   }
 }
 </script>
+
+<style>
+  .filters {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.filters label {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+  </style>
