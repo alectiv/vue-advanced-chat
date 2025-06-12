@@ -178,9 +178,15 @@ export default {
     
       return rooms
     },
-    showInfiniteLoader() {
-      return this.rooms.length > 0 && !this.roomsLoaded && !this.searchQuery;
-    }
+  showInfiniteLoader() {
+    return (
+      this.filteredRooms.length > 0 &&
+      !this.roomsLoaded &&
+      !this.searchQuery &&
+      !this.showOnlyUnread &&
+      !this.selectedTag
+    )
+  }
   },
 
   watch: {
