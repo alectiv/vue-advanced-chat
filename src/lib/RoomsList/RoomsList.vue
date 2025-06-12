@@ -9,28 +9,37 @@
   >
     <slot name="rooms-header" />
 
-    <div style="margin-bottom: 10px;">
-      <input
-        id="name"
-        v-model="searchQuery"
-        type="text"
-        placeholder="Sök efter klient"
-        class="search-field"
-        @input="sendToChatContainer"
-      />
-    </div>
+  <div class="chat-controls">
+  <!-- Sökfält -->
+  <input
+    v-model="searchQuery"
+    type="text"
+    placeholder="Sök efter klient..."
+    @input="sendToChatContainer"
+    class="chat-input"
+  />
 
-    <div class="filters">
-      <label>
-        <input type="checkbox" v-model="showOnlyUnread" />
-        Visa endast olästa
-      </label>
-    
-      <select v-model="selectedTag">
-        <option value="">Alla taggar</option>
-        <option v-for="tag in availableTags" :key="tag" :value="tag">{{ tag }}</option>
-      </select>
-    </div>
+  <!-- Filterrad -->
+  <div class="chat-filters">
+    <label class="chat-checkbox-label">
+      <input
+        type="checkbox"
+        v-model="showOnlyUnread"
+        class="chat-checkbox"
+      />
+      Visa endast olästa
+    </label>
+
+    <select v-model="selectedTag" class="chat-select">
+      <option value="">Alla taggar</option>
+      <option
+        v-for="tag in availableTags"
+        :key="tag"
+        :value="tag"
+      >{{ tag }}</option>
+    </select>
+  </div>
+</div>
 
     <loader :show="loadingRooms" type="rooms">
       <template v-for="(idx, name) in $slots" #[name]="data">
@@ -191,6 +200,12 @@ export default {
   },
 
   watch: {
+     searchQuery(newVal) {
+     // När man raderar hela sökningen, ladda om rooms (om de var filtrerade tidigare)
+      if (newVal === '' && !this.loadingRooms && this.roomsLoaded) {
+        this.$emit('search-after-room', ''); // 🔁 signal till parent att återställ
+      }
+    },
     rooms: {
       deep: true,
       handler(newVal, oldVal) {
@@ -280,17 +295,63 @@ export default {
 </script>
 
 <style>
-  .filters {
+  .chat-controls {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
-  align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 }
 
-.filters label {
-  font-size: 14px;
+.chat-input {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: #3b82f6; /* primary-500 */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* ring effect */
+}
+
+.chat-filters {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 1rem;
+}
+
+.chat-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #374151; /* gray-700 */
+}
+
+.chat-checkbox {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid #d1d5db;
+  accent-color: #3b82f6;
+}
+
+.chat-select {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.chat-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
   </style>
