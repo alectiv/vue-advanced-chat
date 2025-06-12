@@ -137,13 +137,18 @@ export default {
   },
 
   computed: {
-    availableTags() {
+   availableTags() {
       const tags = new Set()
+    
       this.rooms.forEach(room => {
-        if (Array.isArray(room.tags)) {
-          room.tags.forEach(tag => tags.add(tag))
-        }
+        room.users?.forEach(user => {
+          // Vi vill inte ta taggar från currentUserId
+          if (user._id !== this.currentUserId && Array.isArray(user.tags)) {
+            user.tags.forEach(tag => tags.add(tag))
+          }
+        })
       })
+    
       return Array.from(tags)
     },
     filteredRooms() {
